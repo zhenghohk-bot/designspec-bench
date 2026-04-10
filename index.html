@@ -354,6 +354,7 @@ footer {
       <a href="#benchmark">Benchmark</a>
       <a href="#results">Results</a>
       <a href="#discussion">Discussion</a>
+      <a href="#future-work">Future Work</a>
     </div>
   </div>
 </nav>
@@ -690,6 +691,44 @@ footer {
         DesignSpec-Bench introduces a structured framework for evaluating how MLLMs handle text&ndash;image conflicts in design specification contexts. Our pilot study across four models and five conflict types reveals that silent execution is the dominant behavior, that modality bias is a stable model-level property with a 55-point inter-model spread, and that clarification behavior &mdash; though rare &mdash; is associated with substantially higher output quality. These findings motivate the development of larger-scale benchmarks, conflict-aware fine-tuning strategies, and evaluation protocols that treat conflict-handling as a first-class capability dimension alongside accuracy and fluency. We release the benchmark scenarios, annotation guidelines, and analysis code to support future work in this direction.
       </p>
     </div>
+  </div>
+</section>
+
+<!-- FUTURE WORK -->
+<section id="future-work">
+  <div class="content">
+    <div class="section-heading ui fade-in">Future Work</div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">1. Scale-Up to Full Benchmark</div>
+      <p>The pilot's 25 scenarios provide directional findings but cannot support statistical inference. The formal benchmark will expand to 200+ scenarios with systematic severity gradations within each conflict type, enabling robust cross-model comparison and significance testing.</p>
+    </div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">2. Implicit Conflict Scenarios</div>
+      <p>Current scenarios make conflicts explicit in text. A planned extension introduces implicit conflict (IC) scenarios where contradictions only emerge through genuine semantic understanding of the text–image relationship — a more ecologically valid and challenging test of multimodal reasoning.</p>
+    </div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">3. Human Baseline Comparison</div>
+      <p>Adding professional designers as a comparison group would contextualize AI behavior relative to expert human judgment, revealing whether models converge toward or diverge from professional conflict-handling strategies.</p>
+    </div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">4. Model Metacognition</div>
+      <p>Do models know what they did? Future work will task models with self-annotating their own responses using the C/T/S scheme and compare self-assessments against human annotations — a direct probe of metacognitive capacity in current MLLMs.</p>
+    </div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">5. Prompt Intervention Study</div>
+      <p>Testing whether system-level instructions (e.g., "always clarify before proceeding when you detect contradictions") can reliably increase C-behavior rates, and whether such effects generalize across conflict types.</p>
+    </div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">6. Cross-Cultural Normative Conflicts</div>
+      <p>Expanding NC scenarios to cover cultural taboos across East Asian, Southeast Asian, European, and Middle Eastern markets would reveal whether normative conflict sensitivity is universal or region-specific.</p>
+    </div>
+
   </div>
 </section>
 
