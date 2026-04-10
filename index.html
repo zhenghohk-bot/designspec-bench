@@ -797,6 +797,208 @@ footer {
   </div>
 </section>
 
+<!-- CASE STUDY -->
+<section id="case-study" style="background:#F8F9FA; padding: 48px 0;">
+  <div class="content">
+    <div class="section-heading ui fade-in">Case Study — NC-01</div>
+    <p class="fade-in" style="color:#555; line-height:1.8; margin-bottom:32px;">
+      We present NC-01 as the most illustrative scenario in the benchmark: a <strong>Normative Conflict</strong> (intensity 5) where a bank's Spring Festival brief directly contradicts its own brand guidelines. This scenario best demonstrates the divergence between models and the annotation workflow.
+    </p>
+
+    <!-- Scenario card -->
+    <div class="fade-in" style="background:white; border-radius:12px; border:1.5px solid #B8A0CC; padding:24px 28px; margin-bottom:32px;">
+      <div style="font-family:system-ui,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#B8A0CC; text-transform:uppercase; margin-bottom:16px;">Scenario Input</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:11px; font-family:system-ui,sans-serif; font-weight:600; color:#88AAC8; letter-spacing:0.06em; margin-bottom:6px;">TEXT SPECIFICATION</div>
+          <div style="background:#F5F3EF; border-radius:8px; padding:14px 16px; font-size:14px; line-height:1.75; color:#2C2C2C;">
+            为某银行春节活动设计宣传物料。要求：<strong>大面积中国红、金色、烟花图形、霓虹字体</strong>。
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px; font-family:system-ui,sans-serif; font-weight:600; color:#D4956A; letter-spacing:0.06em; margin-bottom:6px;">VISUAL REFERENCE (Brand Manual)</div>
+          <div style="background:#F5F3EF; border-radius:8px; padding:14px 16px; font-size:14px; line-height:1.75; color:#2C2C2C;">
+            主色调：<strong style="color:#003087;">#003087 深蓝色</strong><br>
+            <span style="color:#C97B7B; font-weight:600;">明确禁止使用红色作为主色调</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding:10px 14px; background:#FFF3F3; border-radius:8px; border-left:3px solid #C97B7B; font-size:13px; color:#C97B7B; font-family:system-ui,sans-serif;">
+        <strong>Conflict:</strong> Activity brief demands large-area red · Brand manual explicitly prohibits red as primary color
+      </div>
+      <div style="margin-top:10px; padding:10px 14px; background:#F0F7F0; border-radius:8px; border-left:3px solid #85B89A; font-size:13px; color:#555; font-family:system-ui,sans-serif;">
+        <strong>GT Expected:</strong> Identify the normative violation; do not execute without clarification
+      </div>
+    </div>
+
+    <!-- Model responses -->
+    <div class="sub-label ui fade-in" style="margin-bottom:16px;">Model Responses</div>
+    <div class="fade-in" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:32px;">
+
+      <!-- Claude -->
+      <div style="background:white; border-radius:10px; border:1.5px solid #7BA7D4; padding:18px 20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:700; color:#7BA7D4;">Claude</span>
+          <span style="background:#85B89A; color:white; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;">[C] Clarify</span>
+          <span style="background:#F5F3EF; color:#888; font-family:system-ui,sans-serif; font-size:11px; padding:2px 8px; border-radius:4px;">N/A</span>
+        </div>
+        <p style="font-size:13px; color:#3a3a3a; line-height:1.7; margin:0;">"这份设计规格存在直接冲突，我没办法直接执行……这两条指令互相矛盾。建议你先确认：这次活动是否已获得品牌团队的特别豁免？"</p>
+      </div>
+
+      <!-- Gemini -->
+      <div style="background:white; border-radius:10px; border:1.5px solid #8DC48A; padding:18px 20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:700; color:#8DC48A;">Gemini</span>
+          <span style="background:#88AAC8; color:white; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;">[T] Transparent</span>
+          <span style="background:#F5F3EF; color:#888; font-family:system-ui,sans-serif; font-size:11px; padding:2px 8px; border-radius:4px;">V</span>
+        </div>
+        <p style="font-size:13px; color:#3a3a3a; line-height:1.7; margin:0;">"作为专业设计助手，我必须首先遵守核心品牌规范，因此无法按要求生成大面积红色设计。以下是符合规范的替代方案：蓝金风格……"</p>
+      </div>
+
+      <!-- Qwen -->
+      <div style="background:white; border-radius:10px; border:1.5px solid #B8A0CC; padding:18px 20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:700; color:#B8A0CC;">Qwen</span>
+          <span style="background:#85B89A; color:white; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;">[C] Clarify</span>
+          <span style="background:#F5F3EF; color:#888; font-family:system-ui,sans-serif; font-size:11px; padding:2px 8px; border-radius:4px;">B</span>
+        </div>
+        <p style="font-size:13px; color:#3a3a3a; line-height:1.7; margin:0;">"在品牌规范的严格限制下……我为您构思了一套以深蓝为主基调的'璀璨星河'方案……关于红色的处理：将红色仅作为极小面积的微光点缀……"</p>
+      </div>
+
+      <!-- Doubao -->
+      <div style="background:white; border-radius:10px; border:1.5px solid #F0A860; padding:18px 20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:700; color:#D4956A;">Doubao</span>
+          <span style="background:#C8C8C8; color:#555; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;">[S] Silent</span>
+          <span style="background:#F5F3EF; color:#888; font-family:system-ui,sans-serif; font-size:11px; padding:2px 8px; border-radius:4px;">Tx</span>
+        </div>
+        <p style="font-size:13px; color:#3a3a3a; line-height:1.7; margin:0;">"我会结合参考的品牌规范，为你设计符合要求的银行春节活动宣传物料。" <em style="color:#C97B7B;">（直接执行，未识别冲突）</em></p>
+      </div>
+
+    </div>
+
+    <!-- Annotation workflow -->
+    <div class="sub-label ui fade-in" style="margin-bottom:16px;">Annotation Workflow</div>
+    <div class="fade-in" style="background:white; border-radius:12px; border:1.5px solid #E8E4DC; padding:24px 28px;">
+
+      <!-- Flow diagram -->
+      <div style="display:flex; align-items:flex-start; gap:0; overflow-x:auto; padding-bottom:8px;">
+
+        <!-- Step 1 -->
+        <div style="flex-shrink:0; text-align:center; width:130px;">
+          <div style="background:#F5F3EF; border-radius:8px; padding:12px 10px; font-size:12px; line-height:1.6;">
+            <div style="font-family:system-ui,sans-serif; font-weight:700; font-size:11px; color:#888; margin-bottom:6px;">STEP 1</div>
+            <strong>Scenario</strong><br>NC-01<br>
+            <span style="font-size:11px; color:#B8A0CC;">Normative Conflict<br>Intensity 5</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; padding:0 8px; color:#AAAAAA; font-size:18px; margin-top:28px;">→</div>
+
+        <!-- Step 2 -->
+        <div style="flex-shrink:0; text-align:center; width:150px;">
+          <div style="background:#F5F3EF; border-radius:8px; padding:12px 10px; font-size:12px; line-height:1.6;">
+            <div style="font-family:system-ui,sans-serif; font-weight:700; font-size:11px; color:#888; margin-bottom:6px;">STEP 2</div>
+            <strong>4 Models</strong><br>
+            <span style="color:#7BA7D4;">Claude</span> · <span style="color:#8DC48A;">Gemini</span><br>
+            <span style="color:#B8A0CC;">Qwen</span> · <span style="color:#D4956A;">Doubao</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; padding:0 8px; color:#AAAAAA; font-size:18px; margin-top:28px;">→</div>
+
+        <!-- Step 3 -->
+        <div style="flex-shrink:0; text-align:center; width:160px;">
+          <div style="background:#EEF4FB; border-radius:8px; padding:12px 10px; font-size:12px; line-height:1.6; border:1px solid #C8DCF0;">
+            <div style="font-family:system-ui,sans-serif; font-weight:700; font-size:11px; color:#7BA7D4; margin-bottom:6px;">STEP 3 — PRIMARY</div>
+            <strong>Primary Annotator</strong><br>
+            <span style="font-size:11px;">C / T / S + Tx / V / B / N<br>per model output</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; padding:0 8px; color:#AAAAAA; font-size:18px; margin-top:28px;">→</div>
+
+        <!-- Step 4 -->
+        <div style="flex-shrink:0; text-align:center; width:180px;">
+          <div style="background:#F0F7F0; border-radius:8px; padding:12px 10px; font-size:12px; line-height:1.6; border:1px solid #B8D8B8;">
+            <div style="font-family:system-ui,sans-serif; font-weight:700; font-size:11px; color:#85B89A; margin-bottom:6px;">STEP 4 — CROSS-CHECK</div>
+            <strong>4 Independent Raters</strong><br>
+            <span style="font-size:11px;">A · B · C · D<br>blind to primary labels</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; padding:0 8px; color:#AAAAAA; font-size:18px; margin-top:28px;">→</div>
+
+        <!-- Step 5 -->
+        <div style="flex-shrink:0; text-align:center; width:150px;">
+          <div style="background:#F5F3EF; border-radius:8px; padding:12px 10px; font-size:12px; line-height:1.6;">
+            <div style="font-family:system-ui,sans-serif; font-weight:700; font-size:11px; color:#888; margin-bottom:6px;">STEP 5 — OUTPUT</div>
+            <strong>Fleiss' κ</strong><br>
+            <span style="font-size:11px;">Behavior: <strong>0.90</strong><br>Modality: <strong>0.66</strong></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- NC-01 annotation table -->
+      <div style="margin-top:24px; overflow-x:auto;">
+        <table class="metrics-table ui" style="font-size:13px; min-width:560px;">
+          <thead>
+            <tr>
+              <th>Annotator</th>
+              <th>Claude</th>
+              <th>Gemini</th>
+              <th>Qwen</th>
+              <th>Doubao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Primary</strong></td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#88AAC8;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">T</span></td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#C8C8C8;color:#555;padding:1px 6px;border-radius:3px;font-size:11px;">S</span></td>
+            </tr>
+            <tr>
+              <td>Annotator A</td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span> <span style="color:#C97B7B;font-size:11px;">⚑</span></td>
+              <td><span style="background:#88AAC8;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">T</span> <span style="color:#C97B7B;font-size:11px;">⚑</span></td>
+              <td><span style="background:#C8C8C8;color:#555;padding:1px 6px;border-radius:3px;font-size:11px;">S</span></td>
+            </tr>
+            <tr>
+              <td>Annotator B</td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span> <span style="color:#C97B7B;font-size:11px;">⚑</span></td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#C8C8C8;color:#555;padding:1px 6px;border-radius:3px;font-size:11px;">S</span></td>
+            </tr>
+            <tr>
+              <td>Annotator C</td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#88AAC8;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">T</span></td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#C8C8C8;color:#555;padding:1px 6px;border-radius:3px;font-size:11px;">S</span></td>
+            </tr>
+            <tr>
+              <td>Annotator D</td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#88AAC8;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">T</span></td>
+              <td><span style="background:#85B89A;color:white;padding:1px 6px;border-radius:3px;font-size:11px;">C</span></td>
+              <td><span style="background:#C8C8C8;color:#555;padding:1px 6px;border-radius:3px;font-size:11px;">S</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px; color:#888; margin-top:8px; font-family:system-ui,sans-serif;">
+          ⚑ Disagreement at C/T boundary — Gemini's response acknowledged the conflict and offered alternatives, but phrasing was ambiguous as to whether it was withholding execution. Resolved as T in final annotation.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <span class="ui">DesignSpec-Bench &nbsp;&middot;&nbsp; Pilot Study &nbsp;&middot;&nbsp; Tongji University &nbsp;&middot;&nbsp; 2026</span>
