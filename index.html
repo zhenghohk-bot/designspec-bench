@@ -475,22 +475,104 @@ footer {
     </div>
 
     <div class="sub-label ui fade-in" style="margin-top:36px;">Behavior Codes</div>
-    <div class="behavior-list fade-in">
-      <div class="behavior-item">
-        <div class="behavior-dot" style="background:#7BA7D4;"></div>
-        <span class="behavior-code ui">C</span>
-        <span class="behavior-desc"><strong>Clarification</strong> &mdash; The model explicitly identifies the conflict and asks for clarification or flags the inconsistency before proceeding.</span>
-      </div>
-      <div class="behavior-item">
-        <div class="behavior-dot" style="background:#8DC48A;"></div>
-        <span class="behavior-code ui">T</span>
-        <span class="behavior-desc"><strong>Transparent Assumption</strong> &mdash; The model identifies the conflict and explicitly states its assumptions or reasoning before proceeding, without asking for clarification.</span>
-      </div>
-      <div class="behavior-item">
-        <div class="behavior-dot" style="background:#F0A860;"></div>
-        <span class="behavior-code ui">S</span>
-        <span class="behavior-desc"><strong>Silent execution</strong> &mdash; The model proceeds without acknowledging the conflict, producing output that may blend or arbitrarily select from conflicting inputs.</span>
-      </div>
+    <div class="fade-in">
+      <table class="metrics-table ui" style="margin-top:8px;">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Definition</th>
+            <th>Judgment Criterion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#7BA7D4;display:inline-block;"></span><strong>C</strong></span></td>
+            <td>Clarification</td>
+            <td>The model explicitly identifies the conflict and asks for clarification before proceeding.</td>
+            <td>Output contains a direct question; no design solution provided until answered.</td>
+          </tr>
+          <tr>
+            <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#8DC48A;display:inline-block;"></span><strong>T</strong></span></td>
+            <td>Transparent Assumption</td>
+            <td>The model identifies the conflict and explicitly states its assumptions or reasoning before proceeding, without asking for clarification.</td>
+            <td>Conflict acknowledged + direction stated; no question posed.</td>
+          </tr>
+          <tr>
+            <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#F0A860;display:inline-block;"></span><strong>S</strong></span></td>
+            <td>Silent Execution</td>
+            <td>The model proceeds without acknowledging the conflict, producing output that may blend or arbitrarily select from conflicting inputs.</td>
+            <td>No mention of conflict; direct execution or affirmative response followed by output.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-label ui fade-in" style="margin-top:36px;">Modality Codes</div>
+    <div class="fade-in">
+      <table class="metrics-table ui" style="margin-top:8px;">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Judgment Criterion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tx</strong></td>
+            <td>Text-biased</td>
+            <td>Output direction aligns with textual specification; visual reference downweighted or ignored.</td>
+          </tr>
+          <tr>
+            <td><strong>V</strong></td>
+            <td>Visual-biased</td>
+            <td>Output direction aligns with visual reference; textual specification downweighted.</td>
+          </tr>
+          <tr>
+            <td><strong>B</strong></td>
+            <td>Balanced</td>
+            <td>Model explicitly integrates both modalities, or output reflects both directions.</td>
+          </tr>
+          <tr>
+            <td><strong>N</strong></td>
+            <td>Not applicable</td>
+            <td>Scenario has no reference image; or model triggered C-behavior with no design output.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-label ui fade-in" style="margin-top:36px;">Inter-Annotator Reliability</div>
+    <div class="fade-in">
+      <table class="metrics-table ui" style="margin-top:8px;">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Fleiss κ</th>
+            <th>P<sub>obs</sub></th>
+            <th>P<sub>e</sub></th>
+            <th>Interpretation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Behavior (C / T / S)</td>
+            <td><strong>0.90</strong></td>
+            <td>0.95</td>
+            <td>0.48</td>
+            <td>Strong agreement — 4 disagreements at C/T boundary</td>
+          </tr>
+          <tr>
+            <td>Modality (Tx / V / B)</td>
+            <td><strong>0.66</strong></td>
+            <td>0.80</td>
+            <td>0.41</td>
+            <td>Moderate agreement — disagreements at V/B boundary</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:#888;margin-top:8px;">5 annotators (Primary + A/B/C/D) · 40 units (10 scenarios × 4 models) · pilot set</p>
     </div>
 
     <div class="sub-label ui fade-in" style="margin-top:36px;">Metrics</div>
