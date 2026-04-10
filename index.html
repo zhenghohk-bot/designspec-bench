@@ -382,11 +382,11 @@ footer {
         <div class="stat-label ui">Inter-Annotator Agreement</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value ui" data-target="55" data-suffix=" pts">0 pts</div>
-        <div class="stat-label ui">Modality Bias Spread</div>
+        <div class="stat-value ui" data-target="55" data-suffix=" pp">0 pp</div>
+        <div class="stat-label ui">MBI Spread (percentage points)</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value ui" data-target="4" data-suffix="">0</div>
+        <div class="stat-value ui" data-target="4" data-suffix=" models">0 models</div>
         <div class="stat-label ui">Evaluated MLLMs</div>
       </div>
     </div>
@@ -437,38 +437,38 @@ footer {
     <div class="sub-label ui fade-in">Conflict Taxonomy</div>
     <div class="taxonomy-list fade-in">
       <div class="tax-row" style="border-color: #7BA7D4;">
-        <span class="tax-badge ui">NC</span>
+        <span class="tax-badge ui">SC</span>
         <div class="tax-content">
-          <h4>Normative Conflict</h4>
-          <p>Contradictions between textual design standards or guidelines and visual representations that violate those norms (e.g., accessibility contrast ratios vs. low-contrast mockup).</p>
+          <h4>Style Conflict</h4>
+          <p>The textual specification and visual reference describe incompatible aesthetic directions (e.g., "minimalist, high-end" brief with a dense, retro-style reference image).</p>
         </div>
       </div>
       <div class="tax-row" style="border-color: #8DC48A;">
-        <span class="tax-badge ui">DC</span>
+        <span class="tax-badge ui">EC</span>
         <div class="tax-content">
-          <h4>Dimensional Conflict</h4>
-          <p>Discrepancies between specified numeric dimensions in text (width, height, spacing) and the proportions or measurements visible in the reference image.</p>
+          <h4>Element Conflict</h4>
+          <p>Required elements exceed spatial or compositional constraints, or element positioning requirements are mutually contradictory.</p>
         </div>
       </div>
       <div class="tax-row" style="border-color: #F0A860;">
-        <span class="tax-badge ui">MC</span>
+        <span class="tax-badge ui">RC</span>
         <div class="tax-content">
-          <h4>Material Conflict</h4>
-          <p>Contradictions between textually specified materials, finishes, or textures and the material qualities depicted in the visual reference.</p>
+          <h4>Requirement Conflict</h4>
+          <p>Logical, physical, or temporal constraints are mutually exclusive (e.g., nine deliverables required by the next morning).</p>
         </div>
       </div>
       <div class="tax-row" style="border-color: #B8A0CC;">
-        <span class="tax-badge ui">CC</span>
+        <span class="tax-badge ui">NC</span>
         <div class="tax-content">
-          <h4>Color Conflict</h4>
-          <p>Mismatches between color values, palettes, or schemes described in text and the colors present in the accompanying design image.</p>
+          <h4>Normative Conflict</h4>
+          <p>Design requirements conflict with brand guidelines, legal regulations, or cultural conventions.</p>
         </div>
       </div>
       <div class="tax-row" style="border-color: #E8A0A0;">
-        <span class="tax-badge ui">LC</span>
+        <span class="tax-badge ui">PC</span>
         <div class="tax-content">
-          <h4>Layout Conflict</h4>
-          <p>Contradictions between textual descriptions of spatial arrangement, hierarchy, or composition and the layout shown in the visual specification.</p>
+          <h4>Priority Conflict</h4>
+          <p>Multiple objectives are assigned equal or contradictory priority, making visual hierarchy determination impossible.</p>
         </div>
       </div>
     </div>
@@ -483,7 +483,7 @@ footer {
       <div class="behavior-item">
         <div class="behavior-dot" style="background:#8DC48A;"></div>
         <span class="behavior-code ui">T</span>
-        <span class="behavior-desc"><strong>Text-priority</strong> &mdash; The model silently resolves the conflict by following the textual specification, without acknowledging the visual contradiction.</span>
+        <span class="behavior-desc"><strong>Transparent Assumption</strong> &mdash; The model identifies the conflict and explicitly states its assumptions or reasoning before proceeding, without asking for clarification.</span>
       </div>
       <div class="behavior-item">
         <div class="behavior-dot" style="background:#F0A860;"></div>
@@ -728,6 +728,7 @@ document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 // ── Count-up animation ───────────────────────────────────────────────────────
 function countUp(el) {
   const target = parseFloat(el.dataset.target);
+  if (isNaN(target)) return;  // skip non-numeric stat cards (e.g. κ = 0.90)
   const suffix = el.dataset.suffix || '';
   const duration = 900;
   const start = performance.now();
