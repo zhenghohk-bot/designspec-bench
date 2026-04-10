@@ -744,10 +744,10 @@ footer {
 
     <div class="sub-label ui fade-in">Limitations</div>
     <ul class="limit-list fade-in">
-      <li>The benchmark is a pilot study with a limited number of scenarios per conflict type; results should be interpreted as directional rather than definitive.</li>
-      <li>All models were evaluated at a single point in time; subsequent model updates may alter behavior patterns, limiting the temporal generalizability of the findings.</li>
-      <li>The WCHS metric incorporates subjective quality judgments from human raters, introducing evaluator-side variance that is partially but not fully captured by the inter-annotator agreement statistics.</li>
-      <li>Testing environments were not fully standardized across models; Claude was evaluated via API while the other three models were accessed through product interfaces, which may introduce minor behavioral differences.</li>
+      <li><strong>Pilot scale.</strong> With 25 scenarios across five conflict types, this is a pilot study designed to identify phenomena rather than establish statistical significance. Effect sizes should be interpreted cautiously; we do not report significance tests.</li>
+      <li><strong>Annotation subjectivity.</strong> The C/T/S framework involves judgment calls at the C/T boundary. Inter-annotator reliability was assessed across 5 annotators and 40 units: behavior κ = 0.90 (strong), modality κ = 0.66 (moderate). MBI should be treated as exploratory in this pilot.</li>
+      <li><strong>Testing environment heterogeneity.</strong> Claude was evaluated via API while the other three models were accessed through product interfaces. Preliminary cross-environment validation showed no significant differences, but this remains a potential confound.</li>
+      <li><strong>Single-turn evaluation.</strong> All scenarios were evaluated in a single-turn setting. Multi-turn interactions, where the model can request clarification across multiple exchanges, may reveal different behavioral patterns.</li>
     </ul>
 
     <div class="sub-label ui fade-in" style="margin-top:32px;">Conclusion</div>
