@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesignSpec-Bench: Evaluating Conflict-Handling Behavior of MLLMs</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FAFAF8;
+  --text: #2C2C2C;
+  --accent-blue: #7BA7D4;
+  --accent-green: #8DC48A;
+  --accent-orange: #F0A860;
+  --accent-purple: #B8A0CC;
+  --card-bg: #F5F3EF;
+  --border: #E0DDD8;
+  --nav-h: 52px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.75;
+}
+.ui { font-family: system-ui, -apple-system, sans-serif; }
+
+/* NAV */
+#top-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(250,250,248,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  padding: 0 24px;
+}
+#nav-inner {
+  max-width: 720px; margin: 0 auto; width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+#nav-brand {
+  font-family: system-ui, sans-serif;
+  font-size: 13px; color: #888; letter-spacing: 0.02em;
+  font-weight: 500;
+}
+#nav-links { display: flex; gap: 20px; }
+#nav-links a {
+  font-family: system-ui, sans-serif;
+  font-size: 13px; color: #666; text-decoration: none;
+  letter-spacing: 0.01em; transition: color 0.2s;
+}
+#nav-links a:hover { color: var(--text); }
+#progress-bar {
+  position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 101;
+  height: 2px; background: var(--border);
+}
+#progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+  transition: width 0.1s linear;
+}
+
+/* LAYOUT */
+.content { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+section { padding: 72px 0 48px; }
+section:first-of-type { padding-top: calc(var(--nav-h) + 72px); }
+
+/* FADE ANIMATION */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* SECTION HEADING */
+.section-heading {
+  font-family: system-ui, sans-serif;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888;
+  border-left: 3px solid var(--accent-blue);
+  padding-left: 12px;
+  margin-bottom: 28px;
+}
+
+/* HERO */
+#hero { text-align: center; padding-top: calc(var(--nav-h) + 80px); padding-bottom: 64px; }
+#hero h1 {
+  font-size: clamp(22px, 3.5vw, 30px);
+  font-weight: normal; line-height: 1.4;
+  max-width: 640px; margin: 0 auto 16px;
+  letter-spacing: -0.01em;
+}
+#hero .subtitle {
+  font-family: system-ui, sans-serif;
+  font-size: 14px; color: #888; margin-bottom: 48px;
+  letter-spacing: 0.02em;
+}
+
+/* STAT CARDS */
+.stat-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  margin-top: 40px;
+}
+@media (max-width: 600px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 16px;
+  text-align: center;
+}
+.stat-value {
+  font-family: system-ui, sans-serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--text); line-height: 1.1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-family: system-ui, sans-serif;
+  font-size: 11px; color: #888;
+  letter-spacing: 0.04em; line-height: 1.4;
+}
+
+/* ABSTRACT */
+#abstract p {
+  font-size: 17px; line-height: 1.85;
+  color: #3a3a3a;
+}
+
+/* RQ CARDS */
+.rq-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-top: 8px;
+}
+@media (max-width: 600px) { .rq-grid { grid-template-columns: 1fr; } }
+.rq-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.rq-badge {
+  font-family: system-ui, sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; color: var(--accent-blue);
+  margin-bottom: 8px;
+}
+.rq-card h3 {
+  font-family: system-ui, sans-serif;
+  font-size: 14px; font-weight: 600;
+  margin-bottom: 8px; line-height: 1.4;
+}
+.rq-card p {
+  font-size: 14px; color: #666; line-height: 1.6;
+}
+
+/* TAXONOMY */
+.taxonomy-list { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+.tax-row {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--card-bg);
+  border-radius: 8px; padding: 14px 16px;
+  border-left: 4px solid #ccc;
+}
+.tax-badge {
+  font-family: system-ui, sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em;
+  background: rgba(0,0,0,0.06);
+  border-radius: 4px; padding: 2px 7px;
+  white-space: nowrap; margin-top: 2px;
+  flex-shrink: 0;
+}
+.tax-content h4 {
+  font-family: system-ui, sans-serif;
+  font-size: 14px; font-weight: 600; margin-bottom: 3px;
+}
+.tax-content p { font-size: 14px; color: #666; line-height: 1.5; }
+
+/* BEHAVIOR CODES */
+.behavior-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.behavior-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+}
+.behavior-dot {
+  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+}
+.behavior-code {
+  font-family: system-ui, sans-serif;
+  font-size: 13px; font-weight: 700;
+  width: 24px; flex-shrink: 0;
+}
+.behavior-desc { font-size: 14px; color: #555; }
+
+/* METRICS TABLE */
+.metrics-table {
+  width: 100%; border-collapse: collapse; margin-top: 8px;
+  font-family: system-ui, sans-serif; font-size: 14px;
+}
+.metrics-table th {
+  text-align: left; padding: 10px 14px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: #888; border-bottom: 2px solid var(--border);
+}
+.metrics-table td { padding: 10px 14px; border-bottom: 1px solid transparent; }
+.metrics-table tr:nth-child(even) td { background: var(--card-bg); }
+.metrics-table tr:hover td { background: #EEECEA; }
+
+/* FINDINGS */
+.finding { margin-bottom: 56px; }
+.finding-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.finding-badge {
+  font-family: system-ui, sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  background: var(--text); color: var(--bg);
+  border-radius: 6px; padding: 4px 10px;
+  flex-shrink: 0;
+}
+.finding-header h3 {
+  font-size: 19px; font-weight: normal;
+  letter-spacing: -0.01em;
+}
+.finding p { margin-bottom: 14px; color: #3a3a3a; line-height: 1.8; }
+
+/* FIGURES */
+.figure-wrap { margin: 24px 0; }
+.figure-wrap img {
+  width: 100%; border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: block;
+}
+.figure-wrap img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+.figure-caption {
+  font-family: system-ui, sans-serif;
+  font-size: 13px; color: #888;
+  margin-top: 8px; line-height: 1.5;
+  text-align: center;
+}
+.figure-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; align-items: start; }
+.figure-row > div { display: flex; flex-direction: column; }
+.figure-row > div img { width: 100%; height: 220px; object-fit: contain; background: #fff; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.25s, box-shadow 0.25s; }
+.figure-row > div img:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+@media (max-width: 500px) { .figure-row { grid-template-columns: 1fr; } }
+
+/* DATA HIGHLIGHT */
+.data-row {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin: 16px 0;
+}
+.model-chip {
+  font-family: system-ui, sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 4px 12px; border-radius: 20px;
+  display: flex; align-items: center; gap: 6px;
+}
+.model-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* DISCUSSION */
+.argument-block {
+  border-left: 3px solid var(--accent-blue);
+  padding: 20px 24px;
+  background: var(--card-bg);
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 24px;
+}
+.argument-block.green { border-color: var(--accent-green); }
+.argument-block.orange { border-color: var(--accent-orange); }
+.argument-title {
+  font-family: system-ui, sans-serif;
+  font-size: 15px; font-weight: 700;
+  margin-bottom: 10px;
+}
+.pull-quote {
+  font-size: 16px; font-style: italic;
+  color: #555; line-height: 1.7;
+  margin-bottom: 10px;
+}
+.argument-block p { font-size: 15px; color: #555; line-height: 1.7; }
+
+/* LIMITATIONS */
+.limit-list { list-style: none; margin-top: 8px; }
+.limit-list li {
+  padding: 10px 0 10px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px; color: #555; line-height: 1.6;
+  position: relative;
+}
+.limit-list li::before {
+  content: "—"; position: absolute; left: 0; color: #bbb;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+  font-family: system-ui, sans-serif;
+  font-size: 13px; color: #aaa;
+  letter-spacing: 0.04em;
+}
+
+/* LIGHTBOX */
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.88);
+  align-items: center; justify-content: center;
+  cursor: pointer;
+}
+#lightbox.open { display: flex; }
+#lightbox img {
+  max-width: 92vw; max-height: 92vh;
+  border-radius: 6px;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+}
+#lightbox-close {
+  position: fixed; top: 20px; right: 24px;
+  font-family: system-ui, sans-serif;
+  font-size: 28px; color: #fff; cursor: pointer;
+  line-height: 1; opacity: 0.7;
+}
+#lightbox-close:hover { opacity: 1; }
+
+/* SUBSECTION LABEL */
+.sub-label {
+  font-family: system-ui, sans-serif;
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: #aaa; margin: 28px 0 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="top-nav">
+  <div id="nav-inner">
+    <span id="nav-brand" class="ui">DesignSpec-Bench</span>
+    <div id="nav-links" class="ui">
+      <a href="#abstract">Abstract</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#results">Results</a>
+      <a href="#discussion">Discussion</a>
+    </div>
+  </div>
+</nav>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <span id="lightbox-close">&times;</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="content">
+    <div class="fade-in">
+      <h1>DesignSpec-Bench: Evaluating Conflict-Handling Behavior of Multimodal Large Language Models in Design Specification Scenarios</h1>
+      <p class="subtitle ui">Tongji University &nbsp;&middot;&nbsp; College of Design and Innovation &nbsp;&middot;&nbsp; 2026</p>
+    </div>
+    <div class="stat-row fade-in">
+      <div class="stat-card">
+        <div class="stat-value ui" data-target="60" data-suffix="%">0%</div>
+        <div class="stat-label ui">Overall Silent Execution Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value ui" data-raw="&kappa; = 0.90">&kappa; = 0.90</div>
+        <div class="stat-label ui">Inter-Annotator Agreement</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value ui" data-target="55" data-suffix=" pts">0 pts</div>
+        <div class="stat-label ui">Modality Bias Spread</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value ui" data-target="4" data-suffix="">0</div>
+        <div class="stat-label ui">Evaluated MLLMs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABSTRACT -->
+<section id="abstract">
+  <div class="content">
+    <div class="section-heading ui fade-in">Abstract</div>
+    <div class="fade-in">
+      <p>
+        When multimodal large language models (MLLMs) are deployed in design workflows, they routinely encounter scenarios where textual instructions and visual specifications carry contradictory information. This paper introduces <strong>DesignSpec-Bench</strong>, a pilot benchmark designed to systematically evaluate how MLLMs handle such conflicts in design specification contexts. We construct a taxonomy of five conflict types spanning normative, dimensional, material, color, and layout contradictions, and annotate model responses across four state-of-the-art MLLMs&mdash;Claude, Gemini, Qwen, and Doubao&mdash;using a three-category behavior coding scheme (Clarification, Text-priority, Silent execution). Our analysis reveals a dominant silent execution pattern (overall SER &asymp; 60%), significant inter-model variation in modality bias (MBI range: 33%&ndash;88%), and a quality gap between models that clarify conflicts versus those that silently execute. Inter-annotator reliability is high (Fleiss &kappa; = 0.90 for behavior, &kappa; = 0.66 for modality preference). These findings suggest that conflict-handling behavior is a meaningful and underexplored dimension of MLLM evaluation in applied design contexts.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH QUESTIONS -->
+<section id="rq">
+  <div class="content">
+    <div class="section-heading ui fade-in">Research Questions</div>
+    <div class="rq-grid fade-in">
+      <div class="rq-card">
+        <div class="rq-badge ui">RQ1</div>
+        <h3>Behavior Patterns</h3>
+        <p>What conflict-handling behavior patterns do MLLMs exhibit when facing text&ndash;image contradictions in design specification tasks?</p>
+      </div>
+      <div class="rq-card">
+        <div class="rq-badge ui">RQ2</div>
+        <h3>Modality Preference</h3>
+        <p>When MLLMs resolve conflicts without clarification, do they systematically prefer one modality over another, and does this vary by conflict type?</p>
+      </div>
+      <div class="rq-card">
+        <div class="rq-badge ui">RQ3</div>
+        <h3>Model Differences</h3>
+        <p>How do different MLLMs differ in their conflict-handling strategies, and what are the quality implications of these differences?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK DESIGN -->
+<section id="benchmark">
+  <div class="content">
+    <div class="section-heading ui fade-in">Benchmark Design</div>
+
+    <div class="sub-label ui fade-in">Conflict Taxonomy</div>
+    <div class="taxonomy-list fade-in">
+      <div class="tax-row" style="border-color: #7BA7D4;">
+        <span class="tax-badge ui">NC</span>
+        <div class="tax-content">
+          <h4>Normative Conflict</h4>
+          <p>Contradictions between textual design standards or guidelines and visual representations that violate those norms (e.g., accessibility contrast ratios vs. low-contrast mockup).</p>
+        </div>
+      </div>
+      <div class="tax-row" style="border-color: #8DC48A;">
+        <span class="tax-badge ui">DC</span>
+        <div class="tax-content">
+          <h4>Dimensional Conflict</h4>
+          <p>Discrepancies between specified numeric dimensions in text (width, height, spacing) and the proportions or measurements visible in the reference image.</p>
+        </div>
+      </div>
+      <div class="tax-row" style="border-color: #F0A860;">
+        <span class="tax-badge ui">MC</span>
+        <div class="tax-content">
+          <h4>Material Conflict</h4>
+          <p>Contradictions between textually specified materials, finishes, or textures and the material qualities depicted in the visual reference.</p>
+        </div>
+      </div>
+      <div class="tax-row" style="border-color: #B8A0CC;">
+        <span class="tax-badge ui">CC</span>
+        <div class="tax-content">
+          <h4>Color Conflict</h4>
+          <p>Mismatches between color values, palettes, or schemes described in text and the colors present in the accompanying design image.</p>
+        </div>
+      </div>
+      <div class="tax-row" style="border-color: #E8A0A0;">
+        <span class="tax-badge ui">LC</span>
+        <div class="tax-content">
+          <h4>Layout Conflict</h4>
+          <p>Contradictions between textual descriptions of spatial arrangement, hierarchy, or composition and the layout shown in the visual specification.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-label ui fade-in" style="margin-top:36px;">Behavior Codes</div>
+    <div class="behavior-list fade-in">
+      <div class="behavior-item">
+        <div class="behavior-dot" style="background:#7BA7D4;"></div>
+        <span class="behavior-code ui">C</span>
+        <span class="behavior-desc"><strong>Clarification</strong> &mdash; The model explicitly identifies the conflict and asks for clarification or flags the inconsistency before proceeding.</span>
+      </div>
+      <div class="behavior-item">
+        <div class="behavior-dot" style="background:#8DC48A;"></div>
+        <span class="behavior-code ui">T</span>
+        <span class="behavior-desc"><strong>Text-priority</strong> &mdash; The model silently resolves the conflict by following the textual specification, without acknowledging the visual contradiction.</span>
+      </div>
+      <div class="behavior-item">
+        <div class="behavior-dot" style="background:#F0A860;"></div>
+        <span class="behavior-code ui">S</span>
+        <span class="behavior-desc"><strong>Silent execution</strong> &mdash; The model proceeds without acknowledging the conflict, producing output that may blend or arbitrarily select from conflicting inputs.</span>
+      </div>
+    </div>
+
+    <div class="sub-label ui fade-in" style="margin-top:36px;">Metrics</div>
+    <div class="fade-in">
+      <table class="metrics-table ui">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Definition</th>
+            <th>Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SER</strong></td>
+            <td>Silent Execution Rate &mdash; proportion of S-coded responses</td>
+            <td>0&ndash;1</td>
+          </tr>
+          <tr>
+            <td><strong>CR</strong></td>
+            <td>Clarification Rate &mdash; proportion of C-coded responses</td>
+            <td>0&ndash;1</td>
+          </tr>
+          <tr>
+            <td><strong>MBI</strong></td>
+            <td>Modality Bias Index &mdash; text-priority rate among non-C responses</td>
+            <td>0&ndash;1</td>
+          </tr>
+          <tr>
+            <td><strong>WCHS</strong></td>
+            <td>Weighted Conflict-Handling Score &mdash; quality-weighted composite</td>
+            <td>0&ndash;100</td>
+          </tr>
+          <tr>
+            <td><strong>Fleiss &kappa;</strong></td>
+            <td>Inter-annotator agreement across three raters</td>
+            <td>&minus;1 to 1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results">
+  <div class="content">
+    <div class="section-heading ui fade-in">Results</div>
+
+    <!-- Finding 01 -->
+    <div class="finding fade-in">
+      <div class="finding-header">
+        <span class="finding-badge ui">01</span>
+        <h3>Overall Behavior Distribution</h3>
+      </div>
+      <p>
+        Across all four models and five conflict types, silent execution (S-behavior) is the dominant response strategy, accounting for approximately 60% of all coded responses. This pattern holds consistently across conflict categories, suggesting that MLLMs are broadly inclined to proceed without surfacing ambiguity rather than seeking clarification from the user.
+      </p>
+      <p>
+        Clarification behavior (C) is rare overall but shows meaningful inter-model variation. Claude and Gemini exhibit substantially higher clarification rates compared to Qwen and Doubao, whose silent execution rates reach 76% and 84% respectively. The distribution of T-behavior (text-priority silent execution) is more evenly spread, indicating that when models do resolve conflicts implicitly, text tends to win.
+      </p>
+      <div class="data-row">
+        <span class="model-chip ui" style="background:#EEF4FB;"><span class="model-dot" style="background:#7BA7D4;"></span>Claude SER: 40%</span>
+        <span class="model-chip ui" style="background:#EEF7EE;"><span class="model-dot" style="background:#8DC48A;"></span>Gemini SER: 40%</span>
+        <span class="model-chip ui" style="background:#F3EFF7;"><span class="model-dot" style="background:#B8A0CC;"></span>Qwen SER: 76%</span>
+        <span class="model-chip ui" style="background:#FEF5EC;"><span class="model-dot" style="background:#F0A860;"></span>Doubao SER: 84%</span>
+      </div>
+      <div class="figure-wrap">
+        <img src="fig1_behavior_line.png" alt="Figure 1: Behavior distribution across models and conflict types" loading="lazy">
+        <p class="figure-caption ui">Figure 1. Behavior distribution (C / T / S) across models and conflict types. Lines show per-conflict-type SER for each model.</p>
+      </div>
+    </div>
+
+    <!-- Finding 02 -->
+    <div class="finding fade-in">
+      <div class="finding-header">
+        <span class="finding-badge ui">02</span>
+        <h3>C-Behavior Concentration in Normative Conflicts</h3>
+      </div>
+      <p>
+        Clarification behavior is not uniformly distributed across conflict types. A disproportionate share of C-coded responses clusters around Normative Conflict (NC) scenarios, where design standards or accessibility guidelines are at stake. This suggests that MLLMs are more likely to flag ambiguity when the conflict involves rule-based or evaluative criteria rather than purely perceptual discrepancies.
+      </p>
+      <p>
+        The heatmap below reveals that Claude and Gemini drive most of the NC clarification signal, while Qwen and Doubao show near-zero C-behavior even in normative scenarios. Dimensional and layout conflicts receive the fewest clarifications across all models, indicating that quantitative and spatial contradictions are most likely to be silently absorbed.
+      </p>
+      <div class="figure-wrap">
+        <img src="fig2_heatmap.png" alt="Figure 2: Heatmap of C-behavior rates by model and conflict type" loading="lazy">
+        <p class="figure-caption ui">Figure 2. Heatmap of C-behavior rates (%) by model &times; conflict type. Darker cells indicate higher clarification frequency.</p>
+      </div>
+    </div>
+
+    <!-- Finding 03 -->
+    <div class="finding fade-in">
+      <div class="finding-header">
+        <span class="finding-badge ui">03</span>
+        <h3>Modality Bias Polarization</h3>
+      </div>
+      <p>
+        Among responses that resolve conflicts without clarification, models show strongly polarized modality preferences. The Modality Bias Index (MBI) &mdash; the proportion of non-C responses that follow the text modality &mdash; ranges from 33% (Qwen) to 88% (Claude), a spread of 55 percentage points. This polarization indicates that modality preference is a stable, model-level characteristic rather than a context-driven decision.
+      </p>
+      <p>
+        Claude and Gemini are strongly text-biased (MBI 88% and 78%), while Qwen shows a near-balanced or slight image preference (MBI 33%). Doubao occupies an intermediate position (MBI 67%). Notably, the inter-annotator agreement for modality coding is lower than for behavior coding (Fleiss &kappa; = 0.66 vs. 0.90), reflecting genuine ambiguity in cases where models blend both modalities.
+      </p>
+      <div class="data-row">
+        <span class="model-chip ui" style="background:#EEF4FB;"><span class="model-dot" style="background:#7BA7D4;"></span>Claude MBI: 88%</span>
+        <span class="model-chip ui" style="background:#EEF7EE;"><span class="model-dot" style="background:#8DC48A;"></span>Gemini MBI: 78%</span>
+        <span class="model-chip ui" style="background:#F3EFF7;"><span class="model-dot" style="background:#B8A0CC;"></span>Qwen MBI: 33%</span>
+        <span class="model-chip ui" style="background:#FEF5EC;"><span class="model-dot" style="background:#F0A860;"></span>Doubao MBI: 67%</span>
+      </div>
+      <div class="figure-row">
+        <div>
+          <img src="fig4_diverging.png" alt="Figure 4: Diverging bar chart of modality bias by model" loading="lazy">
+          <p class="figure-caption ui">Figure 4. Diverging bar chart of MBI by model. Bars extending right indicate text preference; left indicates image preference.</p>
+        </div>
+        <div>
+          <img src="fig3_radar.png" alt="Figure 3: Radar chart of behavior profiles per model" loading="lazy">
+          <p class="figure-caption ui">Figure 3. Radar chart of C / T / S behavior profiles for each model across all conflict types.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Finding 04 -->
+    <div class="finding fade-in">
+      <div class="finding-header">
+        <span class="finding-badge ui">04</span>
+        <h3>WCHS Quality Gap</h3>
+      </div>
+      <p>
+        The Weighted Conflict-Handling Score (WCHS) reveals a substantial quality gap between models that clarify conflicts and those that silently execute. Claude achieves the highest WCHS (42.2%), followed by Gemini (30.6%), Qwen (17.5%), and Doubao (8.3%). This ordering mirrors the clarification rate ranking, suggesting that the willingness to surface conflicts is a strong predictor of overall response quality in design specification tasks.
+      </p>
+      <p>
+        A Spearman correlation between SER and WCHS across models yields &rho; = &minus;0.19 (pooled, n.s., p = 0.064, n = all items), indicating a negative but non-significant trend at the item level. The relationship is clearer at the model level: the two models with the lowest SER (Claude, Gemini) consistently outperform the two with the highest SER (Qwen, Doubao) on WCHS. The scatter plot shows that high-SER responses cluster at low WCHS values, while C-coded responses span a wider quality range.
+      </p>
+      <div class="data-row">
+        <span class="model-chip ui" style="background:#EEF4FB;"><span class="model-dot" style="background:#7BA7D4;"></span>Claude WCHS: 42.2%</span>
+        <span class="model-chip ui" style="background:#EEF7EE;"><span class="model-dot" style="background:#8DC48A;"></span>Gemini WCHS: 30.6%</span>
+        <span class="model-chip ui" style="background:#F3EFF7;"><span class="model-dot" style="background:#B8A0CC;"></span>Qwen WCHS: 17.5%</span>
+        <span class="model-chip ui" style="background:#FEF5EC;"><span class="model-dot" style="background:#F0A860;"></span>Doubao WCHS: 8.3%</span>
+      </div>
+      <div class="figure-row">
+        <div>
+          <img src="fig5_wchs_line.png" alt="Figure 5: WCHS by model across conflict types" loading="lazy">
+          <p class="figure-caption ui">Figure 5. WCHS line chart by model across five conflict types.</p>
+        </div>
+        <div>
+          <img src="fig6_scatter.png" alt="Figure 6: Scatter plot of SER vs WCHS" loading="lazy">
+          <p class="figure-caption ui">Figure 6. Scatter plot of SER vs. WCHS per item, colored by behavior code. Spearman &rho; = &minus;0.19, p = 0.064.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DISCUSSION -->
+<section id="discussion">
+  <div class="content">
+    <div class="section-heading ui fade-in">Discussion</div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">1. Normative-Conflict Concentration Effect</div>
+      <p class="pull-quote">"Models are more likely to ask when the rules are at stake."</p>
+      <p>
+        The concentration of C-behavior in normative conflict scenarios points to an implicit hierarchy in how MLLMs weight conflict salience. When a contradiction involves a codified standard &mdash; accessibility guidelines, design system rules, regulatory constraints &mdash; models appear more likely to surface the tension. This may reflect training data patterns where normative violations are more explicitly flagged in human-written design critiques. The practical implication is that designers relying on MLLMs for dimensional or layout checking may receive silently incorrect outputs more often than those using models for standards compliance review.
+      </p>
+    </div>
+
+    <div class="argument-block green fade-in">
+      <div class="argument-title ui">2. Modality Bias as Hidden Design Variable</div>
+      <p class="pull-quote">"Which modality wins is a model property, not a task property."</p>
+      <p>
+        The 55-point spread in MBI across models suggests that modality preference is a stable architectural or training-induced characteristic rather than a context-sensitive judgment. This has significant implications for design workflows: a team using Claude will systematically receive text-dominant outputs, while a team using Qwen may receive image-dominant ones &mdash; even when the task and conflict are identical. This hidden variable is invisible to users who do not explicitly test for it, and could lead to systematic biases in AI-assisted design decisions that go undetected in standard capability evaluations.
+      </p>
+    </div>
+
+    <div class="argument-block orange fade-in">
+      <div class="argument-title ui">3. Conflict Type &gt; Conflict Intensity</div>
+      <p class="pull-quote">"What kind of conflict matters more than how severe it is."</p>
+      <p>
+        Our data suggest that the type of conflict (normative vs. dimensional vs. color) is a stronger predictor of model behavior than the magnitude of the contradiction. Models that clarify do so selectively by type, not proportionally by severity. This challenges the intuition that more obvious or extreme conflicts would reliably trigger clarification. For benchmark design, this implies that conflict taxonomy should be a primary stratification variable, and that severity gradations within a single type may yield less behavioral variance than crossing type boundaries.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- LIMITATIONS & CONCLUSION -->
+<section id="limitations">
+  <div class="content">
+    <div class="section-heading ui fade-in">Limitations &amp; Conclusion</div>
+
+    <div class="sub-label ui fade-in">Limitations</div>
+    <ul class="limit-list fade-in">
+      <li>The benchmark is a pilot study with a limited number of scenarios per conflict type; results should be interpreted as directional rather than definitive.</li>
+      <li>All four evaluated models are commercial APIs accessed at a single point in time; model updates may alter behavior patterns without notice.</li>
+      <li>The WCHS metric incorporates subjective quality judgments from human raters, introducing evaluator-side variance that is partially but not fully captured by the inter-annotator agreement statistics.</li>
+      <li>Testing environments were not fully standardized across models; Claude was evaluated via API while the other three models were accessed through product interfaces, which may introduce minor behavioral differences.</li>
+    </ul>
+
+    <div class="sub-label ui fade-in" style="margin-top:32px;">Conclusion</div>
+    <div class="fade-in">
+      <p style="line-height:1.85; color:#3a3a3a;">
+        DesignSpec-Bench introduces a structured framework for evaluating how MLLMs handle text&ndash;image conflicts in design specification contexts. Our pilot study across four models and five conflict types reveals that silent execution is the dominant behavior, that modality bias is a stable model-level property with a 55-point inter-model spread, and that clarification behavior &mdash; though rare &mdash; is associated with substantially higher output quality. These findings motivate the development of larger-scale benchmarks, conflict-aware fine-tuning strategies, and evaluation protocols that treat conflict-handling as a first-class capability dimension alongside accuracy and fluency. We release the benchmark scenarios, annotation guidelines, and analysis code to support future work in this direction.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="ui">DesignSpec-Bench &nbsp;&middot;&nbsp; Pilot Study &nbsp;&middot;&nbsp; Tongji University &nbsp;&middot;&nbsp; 2026</span>
+</footer>
+
+<script>
+// ── Scroll progress bar ──────────────────────────────────────────────────────
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  fill.style.width = Math.min(pct, 100) + '%';
+}, { passive: true });
+
+// ── IntersectionObserver fade-in ─────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // trigger count-up for stat cards inside this element
+      e.target.querySelectorAll('[data-target]').forEach(el => countUp(el));
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── Count-up animation ───────────────────────────────────────────────────────
+function countUp(el) {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const duration = 900;
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const val = Math.round(ease * target);
+    el.textContent = val + suffix;
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ── Lightbox ─────────────────────────────────────────────────────────────────
+const lightbox = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightbox-img');
+
+document.querySelectorAll('.figure-wrap img, .figure-row img').forEach(img => {
+  img.addEventListener('click', () => {
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  lbImg.src = '';
+}
+
+lightbox.addEventListener('click', closeLightbox);
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ── Figure-row hover effects (inline imgs) ───────────────────────────────────
+document.querySelectorAll('.figure-row img').forEach(img => {
+  img.addEventListener('mouseenter', () => {
+    img.style.transform = 'scale(1.02)';
+    img.style.boxShadow = '0 8px 32px rgba(0,0,0,0.12)';
+  });
+  img.addEventListener('mouseleave', () => {
+    img.style.transform = '';
+    img.style.boxShadow = '';
+  });
+});
+</script>
+</body>
+</html>
