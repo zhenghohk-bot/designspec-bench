@@ -394,6 +394,90 @@ footer {
   </div>
 </section>
 
+  </div>
+</section>
+
+<!-- TEASER FIGURE -->
+<section style="background:#F8F9FA; padding: 32px 0 24px;">
+  <div class="content">
+    <div style="display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:center; gap:0; width:100%;" class="fade-in">
+
+      <!-- Panel A: Design Specification Conflict -->
+      <div style="background:white; border-radius:12px; border:1.5px solid #88AAC8; padding:20px 18px;">
+        <div style="font-family:system-ui,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#88AAC8; text-transform:uppercase; margin-bottom:14px;">A &nbsp; Design Specification Conflict</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="flex:1; border:1.5px solid #88AAC8; border-radius:8px; padding:10px 12px; font-size:13px; line-height:1.6; color:#2C2C2C;">
+            <div style="font-size:10px; color:#88AAC8; font-family:system-ui,sans-serif; font-weight:600; letter-spacing:0.06em; margin-bottom:4px;">TEXT SPEC</div>
+            极简留白，高端精致
+          </div>
+          <div style="font-size:15px; font-weight:700; color:#C97B7B; flex-shrink:0;">VS</div>
+          <div style="flex:1; border:1.5px solid #D4956A; border-radius:8px; padding:10px 12px; font-size:13px; line-height:1.6; color:#2C2C2C;">
+            <div style="font-size:10px; color:#D4956A; font-family:system-ui,sans-serif; font-weight:600; letter-spacing:0.06em; margin-bottom:4px;">VISUAL REF</div>
+            繁复复古风格
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow A→B -->
+      <div style="display:flex; align-items:center; padding:0 12px; color:#AAAAAA; font-size:20px;">→</div>
+
+      <!-- Panel B: Divergent Model Responses -->
+      <div style="background:white; border-radius:12px; border:1.5px solid #85B89A; padding:20px 18px;">
+        <div style="font-family:system-ui,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#85B89A; text-transform:uppercase; margin-bottom:14px;">B &nbsp; Divergent Model Responses</div>
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:600; color:#5B84B1; width:52px;">Claude</span>
+            <span style="background:#85B89A; color:white; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:3px 8px; border-radius:5px; flex-shrink:0;">[C]</span>
+            <span style="font-size:12px; color:#555;">Ask for clarification</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:600; color:#6BAE9E; width:52px;">Gemini</span>
+            <span style="background:#88AAC8; color:white; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:3px 8px; border-radius:5px; flex-shrink:0;">[T]</span>
+            <span style="font-size:12px; color:#555;">Proceed with assumption</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:600; color:#9B89B4; width:52px;">Qwen</span>
+            <span style="background:#C8C8C8; color:#555; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:3px 8px; border-radius:5px; flex-shrink:0;">[S]</span>
+            <span style="font-size:12px; color:#555;">Silent execution</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-family:system-ui,sans-serif; font-size:13px; font-weight:600; color:#D4956A; width:52px;">Doubao</span>
+            <span style="background:#C8C8C8; color:#555; font-family:system-ui,sans-serif; font-size:11px; font-weight:700; padding:3px 8px; border-radius:5px; flex-shrink:0;">[S]</span>
+            <span style="font-size:12px; color:#555;">Silent execution</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow B→C -->
+      <div style="display:flex; align-items:center; padding:0 12px; color:#AAAAAA; font-size:20px;">→</div>
+
+      <!-- Panel C: DesignSpec-Bench Metrics -->
+      <div style="background:white; border-radius:12px; border:1.5px solid #9B89B4; padding:20px 18px;">
+        <div style="font-family:system-ui,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#9B89B4; text-transform:uppercase; margin-bottom:14px;">C &nbsp; DesignSpec-Bench Metrics</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:10px; height:10px; border-radius:50%; background:#C8C8C8; flex-shrink:0; display:inline-block;"></span>
+            <span style="font-family:system-ui,sans-serif; font-size:12px;"><strong>SER</strong> <span style="color:#888;">— Silent Execution Rate</span></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:10px; height:10px; border-radius:50%; background:#88AAC8; flex-shrink:0; display:inline-block;"></span>
+            <span style="font-family:system-ui,sans-serif; font-size:12px;"><strong>CTR</strong> <span style="color:#888;">— Conflict Transparency</span></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:10px; height:10px; border-radius:50%; background:#9B89B4; flex-shrink:0; display:inline-block;"></span>
+            <span style="font-family:system-ui,sans-serif; font-size:12px;"><strong>MBI</strong> <span style="color:#888;">— Modality Bias Index</span></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:10px; height:10px; border-radius:50%; background:#85B89A; flex-shrink:0; display:inline-block;"></span>
+            <span style="font-family:system-ui,sans-serif; font-size:12px;"><strong>WCHS</strong> <span style="color:#888;">— Weighted Quality Score</span></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- ABSTRACT -->
 <section id="abstract">
   <div class="content">
@@ -490,7 +574,7 @@ footer {
             <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#7BA7D4;display:inline-block;"></span><strong>C</strong></span></td>
             <td>Clarification</td>
             <td>The model explicitly identifies the conflict and asks for clarification before proceeding.</td>
-            <td>Output contains a direct question; no design solution provided until answered.</td>
+            <td>Output contains a direct question; no design solution provided until answered. Also coded C: model offers multiple alternative directions for user selection without executing any complete design solution.</td>
           </tr>
           <tr>
             <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#8DC48A;display:inline-block;"></span><strong>T</strong></span></td>
