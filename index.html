@@ -734,6 +734,23 @@ footer {
         Our data suggest that the type of conflict (normative vs. dimensional vs. color) is a stronger predictor of model behavior than the magnitude of the contradiction. Models that clarify do so selectively by type, not proportionally by severity. This challenges the intuition that more obvious or extreme conflicts would reliably trigger clarification. For benchmark design, this implies that conflict taxonomy should be a primary stratification variable, and that severity gradations within a single type may yield less behavioral variance than crossing type boundaries.
       </p>
     </div>
+
+    <div class="argument-block fade-in">
+      <div class="argument-title ui">4. The MIRAGE Hypothesis and Modality Processing</div>
+      <p class="pull-quote"><em>"Does the model actually see the image — or only think it does?"</em></p>
+      <p>
+        While the previous section established that modality bias is a stable model-level property, it leaves open a more fundamental question: does the observed bias reflect genuine visual processing, or does it arise because models never substantively engage with the reference image in the first place?
+      </p>
+      <p>
+        Our MBI findings reveal a striking polarization: Claude (88%) and Gemini (78%) systematically favor textual specifications, while Qwen (33%) trends toward visual references. A critical open question is whether this text-modality bias reflects deliberate specification-following or a deeper failure to process visual inputs &mdash; what Li et al. (2026) term the &ldquo;mirage effect&rdquo; in their MIRAGE benchmark, which demonstrated that state-of-the-art MLLMs largely maintain performance even when visual inputs are entirely removed.
+      </p>
+      <p>
+        If MLLMs do not genuinely process reference images, our MBI metric may be capturing not a decision strategy but an input processing failure. Conversely, Qwen&rsquo;s visual preference raises the possibility that it engages more substantively with reference images than its peers &mdash; an interpretation that requires verification through a no-image ablation condition.
+      </p>
+      <p>
+        We propose a <strong>Mirage Effect Rate (MER)</strong> metric for future work: re-running all reference-image scenarios without the image and measuring output direction consistency. A high MER would reframe modality bias as a form of visual hallucination specific to design specification contexts &mdash; an arguably more concerning failure mode than silent execution, as it implies that visual references function as placebos in current MLLM design workflows.
+      </p>
+    </div>
   </div>
 </section>
 
